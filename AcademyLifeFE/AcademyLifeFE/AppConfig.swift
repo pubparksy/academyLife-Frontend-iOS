@@ -1,0 +1,63 @@
+//
+//  AppConfig.swift
+//  Academy-Life
+//
+//  Created by 서희재 on 11/20/24.
+//
+
+import Foundation
+
+struct AppConfig {
+    static let baseURL: String = {
+        guard let url = Bundle.main.object(forInfoDictionaryKey: "HOST") as? String else {
+            print("Info.plist에 HOST 값이 없어요.")
+            fatalError("Info.plist에 HOST 값이 없어요.")
+        }
+        
+        var resultUrl: String = ""
+        if url.contains("localhost") {
+            resultUrl = "http://\(url)"
+        } else {
+            resultUrl = "https://\(url)"
+        }
+        print("AppConfig baseURL > ", resultUrl)
+        return resultUrl
+    }()
+
+    static let blobContainerDomain: String = {
+        guard let domain = Bundle.main.object(forInfoDictionaryKey: "BLOB_CONTAINER_DOMAIN") as? String else {
+            print("Info.plist에 BLOB_CONTAINER_DOMAIN 값이 없어요.")
+            fatalError("Info.plist에 BLOB_CONTAINER_DOMAIN 값이 없어요.")
+        }
+//        print("AppConfig blobDomain > ", domain)
+        return domain
+    }()
+    
+    static let errorMsg: String = "알 수 없는 에러가 발생했어요.\n잠시 후에 다시 시도해주세요."
+    static let decodeErrorMsg: String = "데이터를 정상적으로 불러오지 못했어요."
+    
+    static let apiKeyKakao: String = {
+        guard let apiKey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_API_KEY") as? String else {
+            print("Info.plist에 KAKAO_API_KEY 값이 없어요.")
+            fatalError("Info.plist에 KAKAO_API_KEY 값이 없어요.")
+        }
+        return apiKey
+    }()
+    
+    
+    static let azureOpenAIDomain: String = {
+        guard let domain = Bundle.main.object(forInfoDictionaryKey: "AOAI_DOMAIN") as? String else {
+            print("Info.plist에 AOAI_DOMAIN 값이 없어요.")
+            fatalError("Info.plist에 AOAI_DOMAIN 값이 없어요.")
+        }
+        return domain
+    }()
+    
+    static let apiKeyAzureOpenAI: String = {
+        guard let apiKey = Bundle.main.object(forInfoDictionaryKey: "AOAI_API_KEY") as? String else {
+            print("Info.plist에 AOAI_API_KEY 값이 없어요.")
+            fatalError("Info.plist에 AOAI_API_KEY 값이 없어요.")
+        }
+        return apiKey
+    }()
+}
