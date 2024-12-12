@@ -11,6 +11,7 @@ struct MainView: View {
     @EnvironmentObject var socialAuthVM: SocialAuthViewModel
     @EnvironmentObject var teacherVM: TeacherViewModel
     @EnvironmentObject var studentVM: StudentViewModel
+    @EnvironmentObject var openAIVM: OpenAIViewModel
     @EnvironmentObject var chatbotVM: ChatbotViewModel
 
     @State private var selectedTab = 1
@@ -40,6 +41,12 @@ struct MainView: View {
                         Image(systemName: "person.fill")
                         Text("마이페이지")
                     }.tag(2)
+                    
+                    OpenAIListView().tabItem {
+                        Image(systemName: "captions.bubble.fill")
+                        Text("챗봇")
+                    }.tag(3)
+                    
                     //AI 탭
                     ChatbotView().tabItem {
                         Image(systemName: "ev.plug.dc.nacs.fill")
