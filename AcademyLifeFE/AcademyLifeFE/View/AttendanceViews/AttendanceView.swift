@@ -6,7 +6,6 @@ struct AttendanceView: View {
     
     @AppStorage("authCd") private var userAuthCd: String?
 
-
     var body: some View {
         NavigationStack {
             VStack {

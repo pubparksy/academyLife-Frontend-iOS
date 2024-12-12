@@ -19,7 +19,10 @@ struct AttendanceStudentRow: View {
 
             Spacer()
 
-            if attendanceVM.showEntryButton && !(course.entryStatus ?? false) && !(course.exitStatus ?? false) {
+            if attendanceVM.showEntryButton
+                && course.isCourseDateToday
+                && !(course.entryStatus ?? false)
+                && !(course.exitStatus ?? false) {
                 Button {
                     showEntryAlert = true
                 } label: {
@@ -40,7 +43,10 @@ struct AttendanceStudentRow: View {
                 }
             }
 
-            if attendanceVM.showExitButton && course.entryStatus ?? false && !(course.exitStatus ?? false) {
+            if attendanceVM.showExitButton
+                && course.isCourseDateToday
+                && course.entryStatus ?? false
+                && !(course.exitStatus ?? false) {
                 Button {
                     showExitAlert = true
                 } label: {
@@ -70,7 +76,7 @@ struct AttendanceStudentRow: View {
 }
 
 #Preview {
-    AttendanceStudentRow(course: AttendanceCourse(courseID: 1, courseName: "iOS", startDate: "2024-08-01", endDate: "2024-09-01", entryStatus: false, exitStatus: false))
+    AttendanceStudentRow(course: AttendanceCourse(courseID: 1, courseName: "iOS", startDate: "2024-08-01", endDate: "2024-09-01", isCourseDateToday: true, entryStatus: false, exitStatus: false))
         .environmentObject(AuthViewModel())
         .environmentObject(NotificationViewModel())
         .environmentObject(AttendanceViewModel())

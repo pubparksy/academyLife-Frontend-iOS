@@ -6,16 +6,23 @@ struct AttendanceTeacherCourseList: View {
 
     var body: some View {
         VStack {
-            Text("출석체크 - 선생님")
-                .font(.headline)
+            PageHeading(title: "출석체크", bottomPaddng: 16)
+            DateDisplay()
             
-            if(attendanceVM.attendanceCourses.count > 0) {
-                List(attendanceVM.attendanceCourses) { course in
-                    AttendanceTeacherCourseRow(course: course)
-                }
-            } else {
-                if let noCourse = attendanceVM.teacherCourseMessage {
-                    Text(noCourse)
+            VStack(alignment: .leading) {
+                PageSubheading(text: "강좌를 선택하세요.")
+                    .padding(.leading)
+                
+                if(attendanceVM.attendanceCourses.count > 0) {
+                    ScrollView {
+                        ForEach(attendanceVM.attendanceCourses) { course in
+                            AttendanceTeacherCourseRow(course: course)
+                        }
+                    }
+                } else {
+                    if let noCourse = attendanceVM.teacherCourseMessage {
+                        Text(noCourse)
+                    }
                 }
             }
         }

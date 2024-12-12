@@ -112,7 +112,16 @@ struct LicenseView: View {
                 """)
                 
                 // 참고 정보
-                Text("4. 참고 정보")
+                Text("4. 아이콘")
+                    .font(.headline)
+                    .bold()
+                
+                Text("""
+                출석체크:
+                - https://www.flaticon.com/kr/free-icons/
+                """)
+                
+                Text("5. 참고 정보")
                     .font(.headline)
                     .bold()
                 

@@ -7,6 +7,8 @@ struct AttendanceStudentList: View {
     var body: some View {
         VStack {
             PageHeading(title: "출석체크")
+            DateDisplay()
+            Spacer()
 //            Text("출석체크")
 //                .font(.headline)
             
@@ -20,6 +22,7 @@ struct AttendanceStudentList: View {
                     Text(noCourse)
                 }
             }
+            Spacer()
         }
         .onAppear {
             attendanceVM.attendanceCourses = []

@@ -18,6 +18,7 @@ struct AttendanceCourse: Codable, Identifiable{
     let courseName: String
     let startDate : String?
     let endDate : String?
+    let isCourseDateToday: Bool
     let entryStatus: Bool?
     let exitStatus: Bool?
 }
