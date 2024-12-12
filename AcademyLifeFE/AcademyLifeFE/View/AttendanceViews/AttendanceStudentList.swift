@@ -6,23 +6,28 @@ struct AttendanceStudentList: View {
     
     var body: some View {
         VStack {
-            PageHeading(title: "출석체크")
+            PageHeading(title: "출석체크", bottomPaddng: 16)
             DateDisplay()
-            Spacer()
-//            Text("출석체크")
-//                .font(.headline)
             
-            if(attendanceVM.attendanceCourses.count > 0) {
-                List(attendanceVM.attendanceCourses) { course in
-                    AttendanceStudentRow(course: course)
-                }
-                
-            } else {
-                if let noCourse = attendanceVM.studentCourseMessage {
-                    Text(noCourse)
+            VStack {
+                if(attendanceVM.attendanceCourses.count > 0) {
+                    VStack(alignment: .leading) {
+                        PageSubheading(text: "강의실 근처로 이동해\n입실/퇴실 버튼을 눌러주세요.")
+                            .padding(.leading)
+                        ScrollView {
+                            ForEach (attendanceVM.attendanceCourses) { course in
+                                AttendanceStudentRow(course: course)
+                            }
+                        }
+                    }
+                } else {
+                    if let noCourse = attendanceVM.studentCourseMessage {
+                        Text(noCourse)
+                            .foregroundStyle(.timiBlack)
+                    }
                 }
             }
-            Spacer()
+            .frame(maxHeight: .infinity)
         }
         .onAppear {
             attendanceVM.attendanceCourses = []

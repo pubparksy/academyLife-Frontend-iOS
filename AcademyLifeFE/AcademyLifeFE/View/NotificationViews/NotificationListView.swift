@@ -13,7 +13,9 @@ struct NotificationListView: View {
     
     var body: some View {
         NavigationStack {
-            PageHeading(title: "알림")
+            PageHeading(title: "알림", bottomPaddng: 16)
+            DateDisplay()
+            
             if notiVM.notifications.count > 0 {
                 ScrollView {
                     VStack(spacing: 0) {
@@ -28,12 +30,10 @@ struct NotificationListView: View {
                 .background(Color.timiTextField)
             } else {
                 VStack {
-                    Spacer()
                     Text("아직 받은 알림이 없어요.")
                         .foregroundStyle(.timiBlack)
-                    Spacer()
                 }
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.timiTextField)
             }
         }

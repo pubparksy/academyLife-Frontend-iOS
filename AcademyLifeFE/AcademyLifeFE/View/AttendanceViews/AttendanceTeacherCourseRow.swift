@@ -13,16 +13,14 @@ struct AttendanceTeacherCourseRow: View {
                 
             )
         ) {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(course.courseName)
                     .font(.system(size: 16))
                     .bold()
                     .foregroundStyle(.timiBlack)
-                if let startDate = course.startDate,
-                   let endDate = course.endDate {
-                    Text("\(startDate) ~ \(endDate)")
-                        .font(.system(size: 14))
-                }
+                Text("\(course.startDate ?? "") ~ \(course.endDate ?? "")")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.timiBlackLight)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()

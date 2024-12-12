@@ -29,7 +29,7 @@ struct MyPageCourseView: View {
                     .font(.system(size: 16))
                     .bold()
                     .foregroundStyle(.timiBlack)
-                VStack {
+                VStack(alignment: .leading) {
                     Text("\(startDate)")
                         .font(.system(size: 13))
                     Text("~ \(endDate)")

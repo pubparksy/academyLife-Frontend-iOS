@@ -11,6 +11,9 @@ struct SmallImageButtonView: View {
     var btnText: String
     var action: () -> Void
     var strSystemImage: String
+    var iconColor: UIColor = .accent
+    var iConManualPosition: Int = 0
+    
     var body: some View {
         VStack {
             Button {
@@ -20,10 +23,11 @@ struct SmallImageButtonView: View {
                     Image(systemName: strSystemImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 22, height: 22)
-                        .foregroundStyle(.accent)
+                        .frame(width: 22, height: 26)
+                        .foregroundStyle(Color(iconColor))
+                        .padding(.leading, CGFloat(iConManualPosition))
                         .padding(.bottom, 4)
-                    Text("삭제")
+                    Text(btnText)
                         .foregroundStyle(.timiBlack)
                         .font(.system(size: 13))
                 }
@@ -31,12 +35,15 @@ struct SmallImageButtonView: View {
             .bold()
             
         }
-        .padding(20)
+        .padding(10)
     }
 }
 
 #Preview {
     SmallImageButtonView(btnText: "수정", action: {
         print("edit button")
-    }, strSystemImage: "slider.horizontal.3")
+    }, strSystemImage: "slider.horizontal.3", iconColor: .black)
+    SmallImageButtonView(btnText: "수정", action: {
+        print("edit button")
+    }, strSystemImage: "door.left.hand.open", iconColor: .black, iConManualPosition: 10)
 }

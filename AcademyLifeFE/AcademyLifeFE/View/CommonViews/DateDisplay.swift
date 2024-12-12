@@ -13,8 +13,8 @@ struct DateDisplay: View {
     var body: some View {
         Text(formatDate(today))
             .padding(.horizontal)
-            .padding(.vertical, 5)
-            .font(.caption)
+            .padding(.vertical, 6)
+            .font(.system(size: 14))
             .foregroundStyle(.timiBlackLight)
             .background(Color.timiTextField)
             .cornerRadius(20)
