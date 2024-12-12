@@ -60,4 +60,26 @@ struct AppConfig {
         }
         return apiKey
     }()
+    
+    static let azureSTTDomain: String = {
+        guard let apiKey = Bundle.main.object(forInfoDictionaryKey: "STT_DOMAIN") as? String else {
+            print("Info.plist에 STT_DOMAIN 값이 없어요.")
+            fatalError("Info.plist에 STT_DOMAIN 값이 없어요.")
+        }
+        return apiKey
+    }()
+    static let azureTTSDomain: String = {
+        guard let apiKey = Bundle.main.object(forInfoDictionaryKey: "TTS_DOMAIN") as? String else {
+            print("Info.plist에 TTS_DOMAIN 값이 없어요.")
+            fatalError("Info.plist에 TTS_DOMAIN 값이 없어요.")
+        }
+        return apiKey
+    }()
+    static let apiKeyAzureSpeechService: String = {
+        guard let apiKey = Bundle.main.object(forInfoDictionaryKey: "SPEECH_API_KEY") as? String else {
+            print("Info.plist에 SPEECH_API_KEY 값이 없어요.")
+            fatalError("Info.plist에 SPEECH_API_KEY 값이 없어요.")
+        }
+        return apiKey
+    }()
 }

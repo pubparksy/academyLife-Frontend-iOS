@@ -7,41 +7,178 @@
 
 import SwiftUI
 import Alamofire
+import AVFoundation
 
-class ChatbotViewModel: ObservableObject {
+class ChatbotViewModel:NSObject, ObservableObject {
     @Published var messages: [Message] = []
+    @Published var isProcessing = false
+    @Published var isRecording = false
+    @Published var isPlaying = false
     
-    let host = AppConfig.azureOpenAIDomain
-    let token = AppConfig.apiKeyAzureOpenAI
+    private var audioRecorder: AVAudioRecorder?
+    private var audioPlayer: AVAudioPlayer?
+    
+    
+    let azureOpenAIEndpoint = AppConfig.azureOpenAIDomain
+    let azureOpenAIKey = AppConfig.apiKeyAzureOpenAI
+    let azureSTTEndpoint = AppConfig.azureSTTDomain
+    let azureTTSEndpoint = AppConfig.azureTTSDomain
+    let azureSpeechKey = AppConfig.apiKeyAzureSpeechService
+    
+    private let audioFileName = "recording.wav"
+    
+  
+    func toggleRecording() {
+        if isRecording {
+            stopRecording()
+        } else {
+            startRecording()
+        }
+    }
+    
+    func startRecording() {
+        
+        let audioFilename = FileManager.default.temporaryDirectory.appendingPathComponent(audioFileName)
+     
+        print(audioFilename)
+        let settings: [String: Any] = [
+            AVFormatIDKey: Int(kAudioFormatLinearPCM), // WAV 포맷
+            AVSampleRateKey: 16000,                   // 샘플 레이트: 16kHz
+            AVNumberOfChannelsKey: 1,                 // 채널 수: 모노
+            AVLinearPCMBitDepthKey: 16,               // 비트 깊이: 16비트
+            AVLinearPCMIsBigEndianKey: false,         // 엔디안 설정: Little Endian
+            AVLinearPCMIsFloatKey: false              // 정수 포맷
+        ]
+        
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playAndRecord, mode: .default, options: .defaultToSpeaker)
+            try audioSession.setActive(true)
+            
+            audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
+           
+            audioRecorder?.prepareToRecord()
+            audioRecorder?.record()
+            isRecording = true
+            print("Recording started")
+        } catch {
+            print("Failed to start recording: \(error.localizedDescription)")
+        }
+    }
+    
+    
+    func stopRecording() {
+        audioRecorder?.stop()
+        isRecording = false
+        isProcessing = true
+        transcribeAudio()
+    }
+    
+    func transcribeAudio() {
+        guard let audioURL = audioRecorder?.url else { return }
+        let url = "https://\(azureSTTEndpoint)"
+        let headers: HTTPHeaders = [
+            "Ocp-Apim-Subscription-Key": azureSpeechKey,
+            "Content-Type": "audio/wav"
+        ]
+        
+        AF.upload(audioURL, to: url, headers: headers)
+            .validate(statusCode: 200..<300)
+            .responseDecodable(of: STTResponse.self) { response in
+                switch response.result {
+                    case .success(let sttResponse):
+                        if let text = sttResponse.DisplayText {
+                            self.sendMessage(content: text)
+                        }
+                    case .failure(let error):
+                        print("STT Error: \(error.localizedDescription)")
+                }
+            }
+    }
+    
+    
+    
+    func convertTextToSpeech(text: String) {
+        let url = "https://\(azureTTSEndpoint)"
+        let headers: HTTPHeaders = [
+            "Ocp-Apim-Subscription-Key": azureSpeechKey,
+            "Content-Type": "application/ssml+xml",
+            "X-Microsoft-OutputFormat": "riff-16khz-16bit-mono-pcm"
+        ]
+        
+        let ssml = """
+        <speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='ko-KR'>
+            <voice name='ko-KR-SunHiNeural'>\(text)</voice>
+        </speak>
+        """
+        
+        let audioFilename = FileManager.default.temporaryDirectory.appendingPathComponent("response.wav")
+        
+        AF.upload(ssml.data(using: .utf8)!, to: url, headers: headers)
+            .responseData { response in
+                switch response.result {
+                    case .success(let data):
+                        do {
+                            try data.write(to: audioFilename)
+                            self.playAudio(from: audioFilename)
+                        } catch {
+                            print("TTS Audio Save Error: \(error.localizedDescription)")
+                        }
+                    case .failure(let error):
+                        print("TTS Error: \(error.localizedDescription)")
+                  
+                }
+            }
+    }
+    
+
+    
+
+    
+    func playAudio(from url: URL) {
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.delegate = self
+            audioPlayer?.play()
+            
+            isPlaying = true
+        } catch {
+            print("Audio Playback Error: \(error.localizedDescription)")
+        }
+    }
+    
+    func stopAudio(){
+        if isPlaying {
+            audioPlayer?.stop()
+            isPlaying = false
+            isProcessing = false
+        }
+    }
     
     func sendMessage(content: String) {
-        let url = "https://\(host)"
+        let url = "https://\(azureOpenAIEndpoint)"
         let messages: [[String: String]] = [
                    ["role": "user", "content": content]
                ]
                
-               let params: Parameters = [
-                   "messages": messages,
-                   "max_tokens": 100
-               ]
+        let params: Parameters = [
+               "messages": messages,
+               "max_tokens": 100
+           ]
         let headers: HTTPHeaders = [
-            "api-key": "\(token)",
+            "api-key": "\(azureOpenAIKey)",
             "Content-Type": "application/json"
         ]
        
         AF.request(url, method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers)
                     .responseDecodable(of: ChatbotRoot.self) { response in
-                        print("리스폰스", response)
                         switch response.result {
                         case .success(let root):
-                            print("루트", root)
-                            // 응답 받은 내용에서 assistant의 메시지를 추출하여 업데이트
                             if let assistantMessage = root.choices.first?.message.content {
                                 DispatchQueue.main.async {
-                                    
-                                    // 사용자 메시지와 챗봇의 답변을 배열에 추가
                                     self.messages.append(Message(role: "user", content: content))
                                     self.messages.append(Message(role: "assistant", content: assistantMessage))
+//                                    self.convertTextToSpeech(text: assistantMessage)
                                 }
                             }
                         case .failure(let error):
@@ -49,19 +186,13 @@ class ChatbotViewModel: ObservableObject {
                         }
                     }
             }
-    
-//        AF.request(url, method: .post, parameters: params,encoding: JSONEncoding.default, headers: headers)
-//            .responseDecodable(of: ChatbotQuestionRoot.self) { response in
-//                print("리스폰스" ,response)
-//                switch response.result {
-//                case .success(let root):
-//                    print(root)
-//                    print("강좌 추가 성공")
-//                case .failure(let error):
-//                    print(error.localizedDescription)
-//     
-//                    
-//                }
-//            }
+
     }
 
+
+
+extension ChatbotViewModel: AVAudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        self.isProcessing = false
+    }
+}

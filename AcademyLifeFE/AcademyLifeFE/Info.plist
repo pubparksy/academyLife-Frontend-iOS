@@ -16,6 +16,12 @@
 	<string>${AOAI_DOMAIN}</string>
 	<key>AOAI_API_KEY</key>
 	<string>${AOAI_API_KEY}</string>
+	<key>STT_DOMAIN</key>
+	<string>${STT_DOMAIN}</string>
+	<key>TTS_DOMAIN</key>
+	<string>${TTS_DOMAIN}</string>
+	<key>SPEECH_API_KEY</key>
+	<string>${SPEECH_API_KEY}</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakaokompassauth</string>

@@ -7,7 +7,7 @@ class OpenAIViewModel: ObservableObject {
     @AppStorage("userID") var userID: String?
     @Published var messages: [OpenAIMessage] = []
     @Published var userInput: String = ""
-    @Published var isLoading: Bool = false
+    @Published var isChatLoading: Bool = false
     
     private let nodeServerURL = "\(AppConfig.baseURL)/openai"
 
@@ -19,7 +19,7 @@ class OpenAIViewModel: ObservableObject {
         let userMessage = OpenAIMessage(role: "user", content: userInput)
         messages.append(userMessage)
         userInput = ""
-        isLoading = true
+        isChatLoading = true
 
         // Prepare request data
         let requestData = OpenAIRequest(messages: messages)
@@ -36,7 +36,7 @@ class OpenAIViewModel: ObservableObject {
             .validate()
             .responseDecodable(of: OpenAIRoot<OpenAIResponse>.self) { [weak self] response in
                 DispatchQueue.main.async {
-                    self?.isLoading = false
+                    self?.isChatLoading = false
                     switch response.result {
                     case .success(let result):
                         if let assistantMessage = result.documents.choices.first?.message {

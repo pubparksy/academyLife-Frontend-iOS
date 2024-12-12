@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+
+struct STTResponse: Decodable {
+    let DisplayText: String?
+}
+
 struct Message: Codable {
     let id = UUID()
     let role: String
