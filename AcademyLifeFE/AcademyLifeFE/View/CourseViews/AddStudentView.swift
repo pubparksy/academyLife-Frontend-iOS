@@ -22,11 +22,8 @@ struct AddStudentView: View {
         
         NavigationStack {
             VStack {
-                Text("수강생 추가")
-                    .font(.system(size: 30))
-                    .foregroundStyle(Color.timiBlack)
-                    .bold()
-                    .padding()
+                PageHeading(title: "수강생 추가")
+                
                 List {
                     ForEach($studentVM.studentList, id: \.userID) { $user in
                         AddStudentRowView(

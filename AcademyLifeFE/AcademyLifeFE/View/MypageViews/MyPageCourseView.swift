@@ -19,24 +19,29 @@ struct MyPageCourseView: View {
                     .frame(width: 30, height: 30)
                 Spacer()
                 Image(systemName: "arrow.up.right")
-            }.padding(.bottom, 50)
-          
-            VStack(alignment: .leading) {
+            }
+            .padding(.bottom, 50)
+            .foregroundStyle(.accent)
+            
+            VStack(alignment: .leading, spacing: 6) {
                 Text(courseName)
                     .lineLimit(2)
-                    .font(.headline)
-                    
-                Text("\(startDate)")
-                    .lineLimit(2)
-                    .font(.caption)
-                Text("\(endDate)")
-                    .lineLimit(2)
-                    .font(.caption)
+                    .font(.system(size: 16))
+                    .bold()
+                    .foregroundStyle(.timiBlack)
+                VStack {
+                    Text("\(startDate)")
+                        .font(.system(size: 13))
+                    Text("~ \(endDate)")
+                        .font(.system(size: 13))
+                }
+                .foregroundStyle(.timiBlackLight)
             }
-        }.padding()
+        }
+        .padding()
+        .background(.accentLight)
         .frame(width: 170, height: 170)
-            .background(Color.accentLight)
-            .cornerRadius(20)
+        .cornerRadius(15)
     }
 }
 

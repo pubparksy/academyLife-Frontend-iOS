@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct MyPageView: View {
-    var today:Date = Date()
     @EnvironmentObject var postVM: PostViewModel
     @EnvironmentObject var courseVM: CourseViewModel
     @EnvironmentObject var teacherVM: TeacherViewModel
@@ -29,70 +28,61 @@ struct MyPageView: View {
             VStack {
                 VStack {
                     PageHeading(title: "마이페이지", bottomPaddng: 16)
-                    Text(formatDate(today))
-                        .padding(.horizontal)
-                        .padding(.vertical, 5)
-                        .font(.caption)
-                        .foregroundStyle(.timiBlackLight)
-                        .background(Color.timiTextField)
-                        .cornerRadius(20)
-                        .padding(.bottom, 28)
+                    DateDisplay()
                 }
                 .padding(.bottom)
                 
                 ScrollView {
-                HStack {
-                    VStack {
-                        NavigationLink {
-                            if userID != 0 {
-                                UploadProfileImageView(navigateToUploadProfileImageView: $navigateToUploadProfileImageView, userIDGiven: userID ?? 0)
-                            }
-                        } label: {
-                            if userID != 0 {
-                                ZStack(alignment: .bottomTrailing) {
-                                    ProfileImageView(userID: userID ?? 0, profileImage: courseVM.profileImage, imageSize: 50)
-                                    Image(systemName: "plus")
-                                        .resizable()
-                                        .frame(width: 12, height: 12)
-                                        .foregroundStyle(.white)
-                                        .padding(4)
-                                        .background(.accent)
-                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                                        .bold()
+                    HStack {
+                        VStack {
+                            NavigationLink {
+                                if userID != 0 {
+                                    UploadProfileImageView(navigateToUploadProfileImageView: $navigateToUploadProfileImageView, userIDGiven: userID ?? 0)
                                 }
-                                .padding(.trailing, 5)
+                            } label: {
+                                if userID != 0 {
+                                    ZStack(alignment: .bottomTrailing) {
+                                        ProfileImageView(userID: userID ?? 0, profileImage: courseVM.profileImage, imageSize: 50)
+                                        Image(systemName: "plus")
+                                            .resizable()
+                                            .frame(width: 12, height: 12)
+                                            .foregroundStyle(.white)
+                                            .padding(4)
+                                            .background(.accent)
+                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                            .bold()
+                                    }
+                                    .padding(.trailing, 5)
+                                }
                             }
                         }
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("남부여성발전센터")
+                                .font(.system(size: 14))
+                                .foregroundStyle(.timiBlackLight)
+                            Text(authCd == "AUTH01" ? "\(courseVM.userName) 선생님, 안녕하세요!" : "\(courseVM.userName) 님, 안녕하세요!")
+                                .font(.system(size: 16))
+                                .bold()
+                        }
+                        Spacer()
                     }
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("남부여성발전센터")
-                            .font(.system(size: 14))
-                            .foregroundStyle(.timiBlackLight)
-                        Text(authCd == "AUTH01" ? "\(courseVM.userName) 선생님, 안녕하세요!" : "\(courseVM.userName) 님, 안녕하세요!")
-                            .font(.system(size: 16))
-                            .bold()
-                    }
-                    Spacer()
-                }
-                .padding()
-                .background(Color.timiTextField)
-                .cornerRadius(20)
-                .padding(.horizontal)
-                
+                    .padding()
+                    .background(Color.timiTextField)
+                    .cornerRadius(20)
+                    .padding(.horizontal)
+                    
                     VStack(alignment: .leading) {
                         HStack {
-                            Text(authCd == "AUTH01" ? "담당 강좌" : "수강 중인 강좌")
-                                .font(.system(size: 18))
-                                .foregroundStyle(.timiBlack)
-                                .bold()
+                            PageSubheading(text: authCd == "AUTH01" ? "담당 강좌" : "수강 중인 강좌", bottomPaddng: 8)
                             Spacer()
                             if authCd == "AUTH01" {
                                 if let id = userID {
                                     NavigationLink(destination:  CourseManageView(userID: id)) {
-                                        HStack {
-                                            Image(systemName: "gearshape.2.fill")
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "gearshape.fill")
                                             Text("강좌 관리").font(.callout)
                                         }
+                                        .bold()
                                         .padding(.trailing)
                                     }
                                 }
@@ -103,6 +93,7 @@ struct MyPageView: View {
                             if courseVM.courses.isEmpty {
                                 VStack(alignment: .center) {
                                     Text("등록된 강좌가 없습니다.")
+                                        .font(.system(size: 15))
                                         .foregroundStyle(.timiBlackLight)
                                 }
                             } else {
@@ -123,10 +114,7 @@ struct MyPageView: View {
                     
                     
                     VStack(alignment: .leading) {
-                        Text("나의 정보 관리")
-                            .font(.system(size: 18))
-                            .bold()
-                            .foregroundStyle(.timiBlack)
+                        PageSubheading(text: "나의 정보 관리", bottomPaddng: 8)
                         
                         NavigationLink {
                             EditProfileView()
@@ -146,10 +134,7 @@ struct MyPageView: View {
                     
                     if authCd == "AUTH01" {
                         VStack(alignment: .leading) {
-                            Text("기타")
-                                .font(.title2)
-                                .bold()
-                                .foregroundStyle(.timiBlack)
+                            PageSubheading(text: "기타", bottomPaddng: 8)
                             
                             Button {
                                 navigateToSignUp = true
@@ -164,10 +149,7 @@ struct MyPageView: View {
                     
                     
                     VStack(alignment: .leading) {
-                        Text("애플리케이션 설정")
-                            .font(.system(size: 18))
-                            .bold()
-                            .foregroundStyle(.timiBlack)
+                        PageSubheading(text: "애플리케이션 설정", bottomPaddng: 10)
                         
                         NavigationLink {
                             AppSettingsView()
@@ -182,13 +164,13 @@ struct MyPageView: View {
                             userVM.images = []
                         } label: {
                             MyPageRowView(systemName: "rectangle.portrait.and.arrow.forward", title: "로그아웃")
-//                            Text("로그아웃")
-//                                .font(.system(size: 18))
-//                                .bold()
-//                                .foregroundStyle(.timiBlackLight)
-//                                .frame(maxWidth: .infinity)
-//                                .padding(.vertical, 16)
-//                                .background(.timiTextField)
+                            //                            Text("로그아웃")
+                            //                                .font(.system(size: 18))
+                            //                                .bold()
+                            //                                .foregroundStyle(.timiBlackLight)
+                            //                                .frame(maxWidth: .infinity)
+                            //                                .padding(.vertical, 16)
+                            //                                .background(.timiTextField)
                         }
                     }.padding()
                     

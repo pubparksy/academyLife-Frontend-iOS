@@ -20,9 +20,11 @@ struct AddStudentRowView: View {
                   Text(userName)
                       .lineLimit(1)  // 텍스트가 한 줄을 넘지 않게 처리
                       .truncationMode(.tail)  // 텍스트가 너무 길면 말줄임표로 처리
+                      .bold()
+                      .foregroundStyle(.timiBlack)
+                      .padding(.leading, 16)  // Toggle과 텍스트 사이에 여백 추가
               }
               .toggleStyle(iOSCheckobxToggleStyle())  // 커스텀 Toggle 스타일 적용
-              .padding(.trailing, 10)  // Toggle과 텍스트 사이에 여백 추가
               .onChange(of: isChecked) { newValue in
                   onToggle(newValue)
               }
@@ -35,8 +37,8 @@ struct AddStudentRowView: View {
                   .lineLimit(1)  // 텍스트가 한 줄을 넘지 않게 처리
                   .truncationMode(.tail)  // 텍스트가 너무 길면 말줄임표로 처리
           }
-          .font(.title2)  // 폰트 크기
-          .padding(.vertical, 8)  // 위아래 여백 추가
+          .font(.system(size: 16))  // 폰트 크기
+          .padding(.vertical, 12)  // 위아래 여백 추가
       }
 
     

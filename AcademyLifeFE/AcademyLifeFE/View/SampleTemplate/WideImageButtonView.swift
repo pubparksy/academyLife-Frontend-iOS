@@ -21,10 +21,11 @@ struct WideImageButtonView: View {
             }
             
         }
+        .bold()
         .frame(maxWidth: .infinity)
-        .foregroundStyle(.green)
+        .foregroundStyle(.accent)
         .padding()
-        .background(.green.opacity(0.1))
+        .background(.accentLight)
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .padding(.horizontal)
         

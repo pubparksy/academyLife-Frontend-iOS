@@ -11,16 +11,14 @@ struct MainView: View {
     @EnvironmentObject var socialAuthVM: SocialAuthViewModel
     @EnvironmentObject var teacherVM: TeacherViewModel
     @EnvironmentObject var studentVM: StudentViewModel
-    @EnvironmentObject var openAIVM: OpenAIViewModel
     @EnvironmentObject var chatbotVM: ChatbotViewModel
-    
-    
+
     @State private var selectedTab = 1
     @State private var showLocationAuthAlert = false
     @State private var alertLocationAuthMessage = ""
     
     @AppStorage("authCd") var authCd: String?
-    
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -30,24 +28,18 @@ struct MainView: View {
                         Image(systemName: "megaphone.fill")
                         Text("알림")
                     }.tag(0)
-                    
+
                     // 출석체크 탭
                     AttendanceView().tabItem {
                         Image(systemName: "person.badge.shield.checkmark.fill")
                         Text("출석체크")
                     }.tag(1)
-                    
+
                     // 마이페이지 탭
                     MyPageView().tabItem {
                         Image(systemName: "person.fill")
                         Text("마이페이지")
                     }.tag(2)
-                    
-                    OpenAIListView().tabItem {
-                        Image(systemName: "captions.bubble.fill")
-                        Text("챗봇")
-                    }.tag(3)
-                    
                     //AI 탭
                     ChatbotView().tabItem {
                         Image(systemName: "ev.plug.dc.nacs.fill")

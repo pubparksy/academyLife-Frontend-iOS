@@ -33,9 +33,13 @@ struct iOSCheckobxToggleStyle: ToggleStyle {
             configuration.isOn.toggle()
         } label: {
             HStack{
-                Image(systemName: configuration.isOn ? "checkmark.square" : "square")
+                Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "checkmark.circle")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 20)
                 configuration.label
-            }.foregroundStyle(.black)
+            }
+            .foregroundStyle(.accent)
         }
     }
 }

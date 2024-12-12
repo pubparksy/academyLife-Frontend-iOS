@@ -19,15 +19,16 @@ struct CourseManageView: View {
     var body: some View {
         NavigationStack {
             VStack{
-                Text("강좌 관리").font(.title).bold()
-                    .frame(maxWidth: .infinity).padding(.top, 20)
-                    .padding(.bottom, 20)
+                
+                PageHeading(title: "강좌 관리", bottomPaddng: 36)
                 
                 VStack {
                     Text("\(courseVM.userName) 선생님이 맡고 계신 강좌에요.").frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.title2)
+                        .foregroundStyle(.timiBlack)
+                        .font(.system(size: 18))
                         .bold()
-                        .padding()
+                        .padding(.horizontal)
+                        .padding(.bottom)
                     if !courseVM.courses.isEmpty {
                         
                     
@@ -47,8 +48,10 @@ struct CourseManageView: View {
                     }
                     } else {
                         Spacer()
-                        Text("현재 진행중인 강좌가 없습니다")
+                        Text("현재 맡고 계신 강좌가 없어요.")
                             .padding()
+                            .font(.system(size: 16))
+                            .foregroundStyle(.timiBlackLight)
                         Spacer()
                     }
                     NavigationLink(
@@ -62,7 +65,8 @@ struct CourseManageView: View {
 
                 }
                 Spacer()
-            }.onAppear {
+            }
+            .onAppear {
                 if userID != 0 {
                     courseVM.getCourse(userID: userID)
                 }

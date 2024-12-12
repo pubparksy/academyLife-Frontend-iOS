@@ -32,6 +32,7 @@ struct CourseRegisterPickerView: View {
                         Text("강좌 분류를 선택해주세요").tag("강좌 분류를 선택해주세요" as String)
                         ForEach(cmDtCdVM.cmDts, id: \.cmDtCd) { item in
                             Text(item.cmDtName).tag(item.cmDtName)
+                                .font(.system(size: 15))
                         }
                     }
                     .onChange(of: selectedCmDtCd) { newValue in
@@ -49,10 +50,10 @@ struct CourseRegisterPickerView: View {
                         }
                     }
                     
-                    .padding()
+                    .padding(.vertical, 8)
                     .frame(maxWidth: .infinity)
-                    .background(.gray.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .background(.timiTextField)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
                 }
             } else {
                 VStack(alignment: .leading) {
@@ -61,6 +62,7 @@ struct CourseRegisterPickerView: View {
                         Text("강사를 선택해주세요").tag("강사를 선택해주세요" as String)
                         ForEach(teacherVM.teachers, id: \.userID) { teacher in
                             Text(teacher.userName).tag(teacher.userName)
+                                .font(.system(size: 15))
                         }
                     }.onChange(of: selectedTeacherName) { newName in
                         if let selectedTeacher = teacherVM.teachers.first(where:{$0.userName == newName}){
@@ -72,10 +74,10 @@ struct CourseRegisterPickerView: View {
                             selectedTeacherName = selectedTeacher.userName
                         }
                     }
-                    .padding()
+                    .padding(.vertical, 8)
                     .frame(maxWidth: .infinity)
                     .background(.gray.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
                 }
             }
         }.onAppear {

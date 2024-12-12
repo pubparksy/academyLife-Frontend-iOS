@@ -17,14 +17,21 @@ struct SmallImageButtonView: View {
                 action()
             } label: {
                 VStack {
-                    Image(systemName: strSystemImage).resizable().frame(width: 30, height: 30)
-                        .foregroundStyle(.green)
-                        .padding(.bottom, 10)
+                    Image(systemName: strSystemImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 22, height: 22)
+                        .foregroundStyle(.accent)
+                        .padding(.bottom, 4)
                     Text("삭제")
+                        .foregroundStyle(.timiBlack)
+                        .font(.system(size: 13))
                 }
             }
+            .bold()
             
-        }.padding()
+        }
+        .padding(20)
     }
 }
 

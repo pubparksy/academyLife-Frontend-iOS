@@ -17,7 +17,7 @@ struct LoginView: View {
     @AppStorage("isLoggedIn") private var isLoggedInAtAppStorage: Bool?
     @State private var isLoggedIn: Bool = false
     @FocusState private var focusedField: Field?
-
+    
     enum Field {
         case email, password
     }
@@ -42,8 +42,8 @@ struct LoginView: View {
                                 .autocorrectionDisabled()
                                 .textInputAutocapitalization(.never)
                                 .focused($focusedField, equals: .password)
-                        }.padding(.bottom, 28)
-                            .ignoresSafeArea(.keyboard, edges: .bottom)
+                        }
+                        .padding(.bottom, 28)
                         VStack(spacing: 16) {
                             WideButton(title: "로그인", bgColor: .accentDefault, textColor: .timiBlack) {
                                 if email.isEmpty {
@@ -54,7 +54,8 @@ struct LoginView: View {
                                     focusedField = nil
                                     authVM.login(email: email, password: password)
                                 }
-                            }.alert("로그인", isPresented: $authVM.showLoginAlert) {
+                            }
+                            .alert("로그인", isPresented: $authVM.showLoginAlert) {
                                 Button("확인") {
                                     authVM.showLoginAlert = false
                                 }
@@ -66,7 +67,6 @@ struct LoginView: View {
                             }
                             .navigationDestination(isPresented: $navigateToSignUp) {
                                 SignUpView(navigateToSignUp: $navigateToSignUp)
-//                                SignUpView(email: "kiTest1@a.com", password: "1111", confirmPassword: "1111", userName: "1111", nickname: "1111", mobile: "1111", navigateToSignUp: $navigateToSignUp)
                             }
                         }
                     }
@@ -84,7 +84,7 @@ struct LoginView: View {
                         SocialSignUpView(navigateToSocialSignUp: $navigateToSocialSignUp)
                     }
                     .navigationTitle("로그인")
-                    // 소셜 로그인 이력 없음 알림: 확인 버튼 터치 시 소셜 회원가입 화면으로 이동
+                    // 소셜 로그인 알림: 회원이 없을 때 나오는 알림 - 확인 버튼 터치 시 소셜 회원가입 화면으로 이동
                     .alert("소셜 로그인", isPresented: $socialAuthVM.showSocialLoginAlert) {
                         Button("확인") {
                             if isLoggedIn != true {

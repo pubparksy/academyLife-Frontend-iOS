@@ -16,7 +16,7 @@ struct MyPageRowView: View {
                 Image(systemName: systemName)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 28, height: 32)
+                    .frame(width: 32, height: 32)
                     .foregroundStyle(.accent)
                     .padding(.vertical, 20)
                     .padding(.trailing, 10)

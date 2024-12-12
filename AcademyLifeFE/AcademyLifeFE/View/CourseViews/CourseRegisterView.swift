@@ -37,17 +37,19 @@ struct CourseRegisterView: View {
         
         VStack {
             
-            Text("강좌 추가").font(.title).bold()
-                .frame(maxWidth: .infinity).padding(.top, 20)
-                .padding(.bottom, 20)
+            PageHeading(title: "강좌 추가")
             
             VStack {
                 CourseRegisterPickerView(title: "강좌 분류", selectedCmDtCd: $selectedCmDtCd, selectedCmDtName: $selectedCmDtName, selectedTeacherID: $selectedTeacherID, selectedTeacherName: $selectedTeacherName, isCategory: true)
-                CourseRegisterTextfieldView(title: "강좌명", placeholder: "강좌명을 입력해주세요.", text: $courseName)
+                    .padding(.horizontal)
+                CustomTextField(placeholder: "강좌명을 입력해주세요.", label: "강좌명", text: $courseName, isLabelShowing: true)
                 CourseRegisterTextView(title: "기간", startDate: $startDate, endDate: $endDate, dateFormatter: dateFormatter)
+                    .padding(.horizontal)
                 CourseRegisterTextfieldView(title: "상세정보", placeholder: "시간, 요일, 강사 등 강좌의 상세 정보를 입력해주세요.", text: $courseDesc)
+                    .padding(.horizontal)
                 CourseRegisterPickerView(title: "담당자", selectedCmDtCd: $selectedCmDtCd, selectedCmDtName: $selectedCmDtName, selectedTeacherID: $selectedTeacherID, selectedTeacherName: $selectedTeacherName, isCategory: false)
-            }.padding()
+                    .padding(.horizontal)
+            }
             Spacer()
             
             WideImageButtonView(btnText: "개설") {

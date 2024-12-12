@@ -15,10 +15,13 @@ struct CourseRegisterTextfieldView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(title)
-            TextField(placeholder, text: $text)
-                .padding()
-                .background(.gray.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+            TextEditor(text: $text)
+                .font(.system(size: 15))
+                .padding(8)
+                .background(.timiTextField)
+                .scrollContentBackground(.hidden)
+                .clipShape(RoundedRectangle(cornerRadius: 15))
+                .frame(height: 80)
         }
     }
 }

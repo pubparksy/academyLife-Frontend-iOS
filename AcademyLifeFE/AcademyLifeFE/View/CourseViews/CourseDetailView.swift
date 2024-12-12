@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+let sampleCourse = CourseByUserID(id: 5, cmDtCd: 2, cmDtName: "조리.제과제빵", courseName: "바리스타1급", courseDesc: "원두 감별, 월목, 2시~5시", startDate: "2024-05-01", endDate: "2024-06-01", userID: 12, teacherName: "")
+
 struct CourseDetailView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var courseVM: CourseViewModel
@@ -24,27 +26,29 @@ struct CourseDetailView: View {
     @State private var navigateToAddStudentView = false
 
     @State private var isFormValid = true
-    
-    
     @State var course: CourseByUserID
     
     var body: some View {
         NavigationStack {
             VStack {
                 
-                Text(course.courseName.isEmpty ? "강좌 상세" : course.courseName).font(.title).bold()
-                    .frame(maxWidth: .infinity).padding(.top, 20)
-                    .padding(.bottom, 20)
+                PageHeading(title: course.courseName.isEmpty ? "강좌 상세" : "\(course.courseName) 강좌 상세")
+                    .font(.title)
+                    .bold()
+                    .frame(maxWidth: .infinity)
                 
-                VStack {
+                VStack (spacing: 16) {
                     CourseRegisterPickerView(title: "강좌 분류", selectedCmDtCd: $course.cmDtCd, selectedCmDtName: $course.cmDtName, selectedTeacherID: $course.userID, selectedTeacherName: $course.teacherName , isCategory: true)
-                    CourseRegisterTextfieldView(title: "강좌명", placeholder: "강좌명을 입력해주세요.", text: $course.courseName)
+                        .padding(.horizontal)
+                    CustomTextField(placeholder: "강좌명을 입력해주세요.", label: "강좌명", text: $course.courseName, isLabelShowing: true)
                     CourseRegisterTextView(title: "기간", startDate: $selectedStartDate, endDate: $selectedEndDate, dateFormatter: dateFormatter)
-                    CourseRegisterTextfieldView(title: "상세 정보", placeholder: "강좌명을 입력해주세요.", text: $course.courseDesc)
-                    CourseRegisterPickerView(title: "담당자", selectedCmDtCd: $course.cmDtCd, selectedCmDtName: $course.courseName, selectedTeacherID: $course.userID, selectedTeacherName: $course.teacherName, isCategory: false)
+                        .padding(.horizontal)
+                    CourseRegisterTextfieldView(title: "상세 정보", placeholder: "강좌 상세 정보를 입력해주세요.", text: $course.courseDesc)
+                        .padding(.horizontal)
+                    CourseRegisterPickerView(title: "선생님", selectedCmDtCd: $course.cmDtCd, selectedCmDtName: $course.courseName, selectedTeacherID: $course.userID, selectedTeacherName: $course.teacherName, isCategory: false)
+                        .padding(.horizontal)
                     
                 }
-                .padding()
                 Spacer()
                 WideImageButtonView(btnText: "수정") {
                     
@@ -115,11 +119,10 @@ struct CourseDetailView: View {
     
 }
 
-//#Preview {
-//
-//    CourseDetailView(course: course)
-//        .environmentObject(CourseViewModel())
-//        .environmentObject(TeacherViewModel())
-//        .environmentObject(CommonDetailCodeViewModel())
-//        .environmentObject(StudentViewModel())
-//}
+#Preview {
+    CourseDetailView(course: sampleCourse)
+        .environmentObject(CourseViewModel())
+        .environmentObject(TeacherViewModel())
+        .environmentObject(CommonDetailCodeViewModel())
+        .environmentObject(StudentViewModel())
+}

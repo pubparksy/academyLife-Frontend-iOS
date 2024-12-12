@@ -26,10 +26,15 @@ struct CourseRowView: View {
     
     var body: some View {
         HStack(spacing: 50) {
-            VStack(alignment: .leading) {
-                Text(courseName).font(.headline)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(courseName)
+                    .foregroundStyle(.timiBlack)
+                    .bold()
+                    .font(.system(size: 16))
                     .lineLimit(1)
-                Text("\(startDate) ~ \(endDate)").font(.caption).foregroundStyle(.opacity(0.3))
+                Text("\(startDate) ~ \(endDate)")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.timiBlackLight)
             }
             Spacer()
             
@@ -68,9 +73,10 @@ struct CourseRowView: View {
             
         }
         
-        .padding()
-        .background(.gray.opacity(0.1))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .padding(.leading, 20)
+        .padding(.vertical)
+        .background(.timiTextField)
+        .clipShape(RoundedRectangle(cornerRadius: 15))
         .padding(.horizontal)
         
     }

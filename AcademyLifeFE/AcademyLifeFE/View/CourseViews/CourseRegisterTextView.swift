@@ -36,7 +36,8 @@ struct CourseRegisterTextView: View {
                 .padding()
                 .frame(maxWidth: .infinity)
                 .background(.gray.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .clipShape(RoundedRectangle(cornerRadius: 15))
+                .font(.system(size: 15))
 
             
     }
