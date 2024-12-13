@@ -41,5 +41,9 @@
 	<string>앱이 비콘과 통신하기 위해 Bluetooth를 사용합니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>슬기로운 학원생활 앱에서 사용자의 사진 라이브러리 접근 권한을 요청합니다.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>슬기로운 학원생활 앱에서 음성 인식을 위해 마이크 접근 권한을 요청합니다.</string>
+    <key></key>
+	<string></string>
 </dict>
 </plist>

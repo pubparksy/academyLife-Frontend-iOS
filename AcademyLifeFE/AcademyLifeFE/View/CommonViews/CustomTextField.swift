@@ -10,7 +10,7 @@ import SwiftUI
 struct CustomTextField: View {
     /* 뷰 호출 시 유동적으로 지정되도록 */
     var placeholder: String
-    var label: String
+    var label: String = ""
     @Binding var text: String // 상위 뷰에서 지정이 되므로
     var isSecured: Bool = false // 값을 넘겨주지 않으면 false가 되도록 지정
     var isLabelShowing: Bool = true
@@ -41,8 +41,6 @@ struct CustomTextField: View {
                     TextField(placeholder, text: $text)
                 }
             }
-            .textInputAutocapitalization(.never) // 첫 글자 대문자 변경 비활성화
-            .autocorrectionDisabled(true) // 자동 완성 비활성화
             .font(.system(size: 15))
             .padding()
             .background(!isDisabled ? .timiTextField : .white)
@@ -52,10 +50,12 @@ struct CustomTextField: View {
                     .stroke(!isDisabled ? .clear : .timiGray.opacity(0.5), lineWidth: 2)
             )
             .clipShape(RoundedRectangle(cornerRadius: 15))
-            .disabled(isDisabled)
+            .textInputAutocapitalization(.never) // 첫 글자 대문자 변경 비활성화
+            .autocorrectionDisabled(true) // 자동 완성 비활성화
             .onTapGesture {
                 dismissKeyboard()
             }
+            .disabled(isDisabled)
         }
         .padding(.horizontal)
     }
