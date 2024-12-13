@@ -8,6 +8,7 @@
 import SwiftUI
 import Alamofire
 import AVFoundation
+import SVProgressHUD
 
 class ChatbotViewModel:NSObject, ObservableObject {
     @Published var messages: [Message] = []
@@ -18,7 +19,6 @@ class ChatbotViewModel:NSObject, ObservableObject {
     private var audioRecorder: AVAudioRecorder?
     private var audioPlayer: AVAudioPlayer?
     
-    
     let azureOpenAIEndpoint = AppConfig.azureOpenAIDomain
     let azureOpenAIKey = AppConfig.apiKeyAzureOpenAI
     let azureSTTEndpoint = AppConfig.azureSTTDomain
@@ -26,7 +26,6 @@ class ChatbotViewModel:NSObject, ObservableObject {
     let azureSpeechKey = AppConfig.apiKeyAzureSpeechService
     
     private let audioFileName = "recording.wav"
-    
   
     func toggleRecording() {
         if isRecording {
@@ -37,7 +36,6 @@ class ChatbotViewModel:NSObject, ObservableObject {
     }
     
     func startRecording() {
-        
         let audioFilename = FileManager.default.temporaryDirectory.appendingPathComponent(audioFileName)
      
         print(audioFilename)
@@ -51,6 +49,8 @@ class ChatbotViewModel:NSObject, ObservableObject {
         ]
         
         do {
+            SVProgressHUD.show()
+            
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(.playAndRecord, mode: .default, options: .defaultToSpeaker)
             try audioSession.setActive(true)
@@ -60,6 +60,8 @@ class ChatbotViewModel:NSObject, ObservableObject {
             audioRecorder?.prepareToRecord()
             audioRecorder?.record()
             isRecording = true
+            
+            SVProgressHUD.dismiss()
             print("Recording started")
         } catch {
             print("Failed to start recording: \(error.localizedDescription)")
@@ -75,6 +77,8 @@ class ChatbotViewModel:NSObject, ObservableObject {
     }
     
     func transcribeAudio() {
+        SVProgressHUD.show()
+        
         guard let audioURL = audioRecorder?.url else { return }
         let url = "https://\(azureSTTEndpoint)"
         let headers: HTTPHeaders = [
@@ -85,6 +89,8 @@ class ChatbotViewModel:NSObject, ObservableObject {
         AF.upload(audioURL, to: url, headers: headers)
             .validate(statusCode: 200..<300)
             .responseDecodable(of: STTResponse.self) { response in
+                SVProgressHUD.dismiss()
+                
                 switch response.result {
                     case .success(let sttResponse):
                         if let text = sttResponse.DisplayText {
@@ -99,6 +105,8 @@ class ChatbotViewModel:NSObject, ObservableObject {
     
     
     func convertTextToSpeech(text: String) {
+            SVProgressHUD.show()
+        
         let url = "https://\(azureTTSEndpoint)"
         let headers: HTTPHeaders = [
             "Ocp-Apim-Subscription-Key": azureSpeechKey,
@@ -116,6 +124,8 @@ class ChatbotViewModel:NSObject, ObservableObject {
         
         AF.upload(ssml.data(using: .utf8)!, to: url, headers: headers)
             .responseData { response in
+                SVProgressHUD.dismiss()
+                
                 switch response.result {
                     case .success(let data):
                         do {
@@ -136,26 +146,36 @@ class ChatbotViewModel:NSObject, ObservableObject {
 
     
     func playAudio(from url: URL) {
+        SVProgressHUD.show()
+        
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
             audioPlayer?.delegate = self
             audioPlayer?.play()
             
             isPlaying = true
+            
+            SVProgressHUD.dismiss()
         } catch {
             print("Audio Playback Error: \(error.localizedDescription)")
         }
     }
     
     func stopAudio(){
+        SVProgressHUD.show()
+        
         if isPlaying {
             audioPlayer?.stop()
             isPlaying = false
             isProcessing = false
+            
+            SVProgressHUD.dismiss()
         }
     }
     
     func sendMessage(content: String) {
+        SVProgressHUD.show()
+        
         let url = "https://\(azureOpenAIEndpoint)"
         let messages: [[String: String]] = [
                    ["role": "user", "content": content]
@@ -172,6 +192,8 @@ class ChatbotViewModel:NSObject, ObservableObject {
        
         AF.request(url, method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers)
                     .responseDecodable(of: ChatbotRoot.self) { response in
+                        SVProgressHUD.dismiss()
+                        
                         switch response.result {
                         case .success(let root):
                             if let assistantMessage = root.choices.first?.message.content {

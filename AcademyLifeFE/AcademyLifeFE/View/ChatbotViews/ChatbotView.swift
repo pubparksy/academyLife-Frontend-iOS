@@ -13,103 +13,108 @@ struct ChatbotView: View {
     
     var body: some View {
         VStack {
-            Text("수호천사 티미ㅋㅋ")
-                .padding(.top, 20)
+            PageHeading(title: "AI 학습 도우미", bottomPaddng: 16)
             
-            ScrollView {
-                Text("질문을 시작해주세요.")
-                    .font(.headline)
-                    .foregroundColor(.gray)
-                ForEach(chatbotVM.messages, id:\.id) { message in
-                    HStack {
-                        if message.role == "user" {
-                            
-                            VStack{
-                                Spacer()
-                                Text("User: \(message.content)")
-                                    .padding()
-                                    .background(Color.blue)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
-                                    .padding(.horizontal)
-                            }.frame(maxWidth: .infinity)
-                        } else {
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    Text("Assistant: \(message.content)")
-                                        .padding()
-                                        .background(Color.green)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(10)
-                                        .padding(.horizontal)
-                                    if chatbotVM.isPlaying {
-                                        Button(action: {
-                                            chatbotVM.stopAudio()
-                                        }) {
-                                            Text("Stop")
-                                                .padding()
-                                                .background(Color.green)
-                                                .foregroundColor(.white)
-                                                .cornerRadius(8)
-                                        }
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack {
+                        Text("학습 중에 궁금한 점이 생기면 AI 학습 도우미에게 물어보세요.\n대화 내용은 앱이 종료되면 사라집니다.")
+                            .foregroundColor(.timiBlackLight)
+                            .font(.system(size: 14))
+                            .multilineTextAlignment(.center)
+                            .padding(.bottom, 16)
+                        
+                        ForEach(chatbotVM.messages, id:\.id) { message in
+                            VStack(spacing: 4) {
+                                VStack {
+                                    HStack {
+                                        if message.role == "user" {
+                                            VStack{
+                                                ChatbotSpeechView(text: message.content)
+                                                    .id(message)
+                                            }
                                         } else {
-                                            
-                                        Button(action: {
-                                            chatbotVM.convertTextToSpeech(text: message.content)
-                                            
-                                        }) {
-                                            Image(systemName: "speaker.wave.2.fill")
-                                                .resizable()
-                                                .frame(width: 20, height: 20)
-                                                .foregroundColor( .green)
-                                                .padding()
-                                        }.onAppear {
-                                            chatbotVM.isPlaying = false
-                                            chatbotVM.isProcessing = false
+                                            VStack{
+                                                ChatbotSpeechView(text: message.content, role: .agent)
+                                                    .id(message)
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                    .padding(.vertical, 4)
                 }
-                
+                .scrollDismissesKeyboard(.interactively)
+                .onTapGesture {
+                    dismissKeyboard()
+                }
+                .onAppear {
+                    if let lastSpeech = chatbotVM.messages.last {
+                        proxy.scrollTo(lastSpeech, anchor: .bottom)
+                    }
+                }
+                .onChange(of: chatbotVM.messages) { _ in
+                    if let lastSpeech = chatbotVM.messages.last {
+                        withAnimation {
+                            proxy.scrollTo(lastSpeech, anchor: .bottom)
+                        }
+                    }
+                }
             }
             
-            //텍스트 필드 + 보내기 버튼 + 음성 녹음 버튼
-            HStack {
-                TextField("티미에게 질문해보세요!", text: $userInput)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+            // 텍스트 필드 + 보내기 버튼 + 음성 녹음 버튼
+            HStack(spacing: 0) {
                 HStack {
-                    Button(action: {
+                    TextField("질문을 입력해주세요.", text: $userInput)
+                        .font(.system(size: 16))
+                    
+                    Button {
                         chatbotVM.sendMessage(content: userInput)
                         userInput = "" // 메시지 전송 후 입력창 비우기
-                    }) {
-                        Text("Send")
-                            .padding()
-                            .background(Color.accentDark)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                        dismissKeyboard()
+                    } label: {
+                        Image(systemName: "paperplane.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 16, height: 16)
+                            .padding(8)
+                            .foregroundStyle(.white)
+                            .background(userInput.isEmpty ? .timiGray : .accent)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                     .disabled(userInput.isEmpty || chatbotVM.isProcessing)
                     
-                   Button(action: {
-                        if !chatbotVM.isProcessing {
-                            chatbotVM.toggleRecording()
-                        }
-                        
-                    }) {
-                        VStack(spacing:10){
-                            Image(systemName: chatbotVM.isRecording ? "stop.circle" : "mic.circle")
-                                .font(.system(size: 60))
-                                .foregroundColor(chatbotVM.isRecording ? .red : .blue)
-                        }
-                    }
                 }
-                .padding()
-                .disabled(chatbotVM.isProcessing)
+                .padding(8)
+                .foregroundStyle(.timiBlack)
+                .background(.white)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(.timiGray.opacity(0.5), lineWidth: 2)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 15))
                 
+                Button {
+                    if !chatbotVM.isProcessing {
+                        chatbotVM.toggleRecording()
+                        userInput = ""
+                        dismissKeyboard()
+                    }
+                } label: {
+                    Image(systemName: !chatbotVM.isRecording ? "microphone.fill" : "microphone.badge.xmark.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
+                        .padding(.vertical, 14)
+                        .padding(.leading, !chatbotVM.isRecording ? 14 : 16)
+                        .padding(.trailing, !chatbotVM.isRecording ? 14 : 12)
+                        .foregroundColor(!chatbotVM.isRecording ? .accent : .timiRed)
+                        .background(!chatbotVM.isRecording ? .accentLight : .timiRed.opacity(0.3))
+                        .clipShape(RoundedRectangle(cornerRadius: 15))
+                        .padding(8)
+                }
+                .disabled(chatbotVM.isProcessing)
             }
             .padding()
         }

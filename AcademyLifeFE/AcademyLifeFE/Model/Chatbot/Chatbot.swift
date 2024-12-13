@@ -12,7 +12,7 @@ struct STTResponse: Decodable {
     let DisplayText: String?
 }
 
-struct Message: Codable {
+struct Message: Codable, Hashable {
     let id = UUID()
     let role: String
     let content: String
