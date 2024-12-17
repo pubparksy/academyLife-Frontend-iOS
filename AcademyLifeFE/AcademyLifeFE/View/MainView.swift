@@ -42,10 +42,10 @@ struct MainView: View {
                         Text("마이페이지")
                     }.tag(2)
                     
-                    OpenAIListView().tabItem {
-                        Image(systemName: "captions.bubble.fill")
-                        Text("챗봇")
-                    }.tag(3)
+//                    OpenAIListView().tabItem {
+//                        Image(systemName: "captions.bubble.fill")
+//                        Text("챗봇")
+//                    }.tag(3)
                     
                     //AI 탭
                     ChatbotView().tabItem {
