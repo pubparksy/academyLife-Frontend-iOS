@@ -18,7 +18,7 @@ struct DateDisplay: View {
             .foregroundStyle(.timiBlackLight)
             .background(Color.timiTextField)
             .cornerRadius(20)
-            .padding(.bottom, 28)
+            .padding(.bottom, 16)
     }
 }
 

@@ -15,6 +15,7 @@ struct AttendanceStudentRow: View {
                     .font(.system(size: 16))
                     .bold()
                     .foregroundStyle(.timiBlack)
+                    .lineLimit(1)
                 Text("\(course.startDate ?? "") ~ \(course.endDate ?? "")")
                     .font(.system(size: 14))
                     .foregroundStyle(.timiBlackLight)
@@ -45,8 +46,6 @@ struct AttendanceStudentRow: View {
                     && course.isCourseDateToday
                     && course.entryStatus ?? false
                     && !(course.exitStatus ?? false) {
-                    HorizontalDivider()
-                    
                     SmallImageButtonView(btnText: "퇴실", action: {
                         showExitAlert = true
                     }, strSystemImage: "rectangle.portrait.and.arrow.right", iconColor: .timiRed, iConManualPosition: 4)
@@ -67,7 +66,7 @@ struct AttendanceStudentRow: View {
                 }
             }
         }
-        .frame(height: 80)
+        .frame(height: 60)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(.timiTextField)
@@ -78,7 +77,7 @@ struct AttendanceStudentRow: View {
 }
 
 #Preview {
-    AttendanceStudentRow(course: AttendanceCourse(courseID: 1, courseName: "iOS", startDate: "2024-08-01", endDate: "2024-09-01", isCourseDateToday: true, entryStatus: false, exitStatus: false))
+    AttendanceStudentRow(course: AttendanceCourse(courseID: 1, courseName: "생성형 AI활용 클라우드 기반 iOS 앱 개발자 과정", startDate: "2024-08-01", endDate: "2024-09-01", isCourseDateToday: true, entryStatus: false, exitStatus: false))
         .environmentObject(AuthViewModel())
         .environmentObject(NotificationViewModel())
         .environmentObject(AttendanceViewModel())

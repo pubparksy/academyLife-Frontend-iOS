@@ -11,7 +11,8 @@ struct HorizontalDivider: View {
     var body: some View {
         Rectangle()
             .frame(width: 1, height: 39)
-            .foregroundStyle(.timiGray.opacity(0.5))
+            .foregroundStyle(.timiGray.opacity(0.4))
+            .padding(.horizontal, 4)
     }
 }
 

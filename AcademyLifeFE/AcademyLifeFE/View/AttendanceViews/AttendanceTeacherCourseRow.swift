@@ -22,6 +22,7 @@ struct AttendanceTeacherCourseRow: View {
                     .font(.system(size: 14))
                     .foregroundStyle(.timiBlackLight)
             }
+            .frame(height: 60)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
             .background(.timiTextField)

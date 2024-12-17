@@ -28,15 +28,15 @@ struct SocialLoginKakaoView: View {
     // 카카오 앱/웹으로 로그인 시키기
     func authViaKakao() {
         // 카카오톡 어플이 사용 가능하면 앱으로 이동하기
-        if UserApi.isKakaoTalkLoginAvailable() {
-            UserApi.shared.loginWithKakaoTalk { token, error in
-                if let error {
-                    print(error.localizedDescription)
-                } else {
-                    fetchUserInfo()
-                }
-            }
-        } else {
+//        if UserApi.isKakaoTalkLoginAvailable() {
+//            UserApi.shared.loginWithKakaoTalk { token, error in
+//                if let error {
+//                    print(error.localizedDescription)
+//                } else {
+//                    fetchUserInfo()
+//                }
+//            }
+//        } else {
             // 아니면 웹뷰로 진행하기
             UserApi.shared.loginWithKakaoAccount { token, error in
                 if let error {
@@ -45,7 +45,7 @@ struct SocialLoginKakaoView: View {
                     fetchUserInfo()
                 }
             }
-        }
+//        }
     }
     
     // 카카오 서버에 해당 회원이 있는지 검증하기

@@ -12,7 +12,7 @@ struct AttendanceTeacherCourseList: View {
             VStack {
                 if(attendanceVM.attendanceCourses.count > 0) {
                     VStack(alignment: .leading) {
-                        PageSubheading(text: "미입실 회원을 조회할 강좌를 선택하세요.")
+                        PageSubheading(text: "미입실 학생을 조회할 강좌를 선택하세요.")
                             .padding(.leading)
                         ScrollView {
                             ForEach(attendanceVM.attendanceCourses) { course in
@@ -33,7 +33,6 @@ struct AttendanceTeacherCourseList: View {
             attendanceVM.attendanceCourses = [] // [qa] cache 잔여 이슈로 초기화
             attendanceVM.fetchTeacherCourses()
         }
-        .navigationTitle("강좌 목록")
     }
 }
 

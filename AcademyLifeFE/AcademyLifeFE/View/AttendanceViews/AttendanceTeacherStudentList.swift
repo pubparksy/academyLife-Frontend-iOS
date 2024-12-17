@@ -8,9 +8,10 @@ struct AttendanceTeacherStudentList: View {
 
     var body: some View {
         VStack {
-            Text("미입실 학생 목록")
-                .font(.headline)
-            DateDisplay()
+            PageHeading(title: "미입실 학생 목록", bottomPaddng: 16)
+            Text("\(courseName) 강좌")
+                .foregroundStyle(.accent)
+                .padding(.bottom)
             
             Spacer()
             if !isCourseDateToday {
@@ -26,8 +27,10 @@ struct AttendanceTeacherStudentList: View {
                     
                 }
             } else if isCourseDateToday && !attendanceVM.attendanceNotEntries.isEmpty {
-                List(attendanceVM.attendanceNotEntries) { student in
-                    AttendanceTeacherStudentRow(student: student, courseID: courseID)
+                ScrollView {
+                    ForEach(attendanceVM.attendanceNotEntries) { student in
+                        AttendanceTeacherStudentRow(student: student, courseID: courseID)
+                    }
                 }
             }
             Spacer()
@@ -35,7 +38,6 @@ struct AttendanceTeacherStudentList: View {
         .onAppear {
             attendanceVM.fetchTeacherStudents(cID: courseID)
         }
-        .navigationTitle("\(courseName) 강좌")
     }
 }
 

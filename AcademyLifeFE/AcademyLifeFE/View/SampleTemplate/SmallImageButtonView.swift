@@ -32,10 +32,8 @@ struct SmallImageButtonView: View {
                         .font(.system(size: 13))
                 }
             }
-            .bold()
-            
         }
-        .padding(10)
+        .padding(.vertical, 10)
     }
 }
 

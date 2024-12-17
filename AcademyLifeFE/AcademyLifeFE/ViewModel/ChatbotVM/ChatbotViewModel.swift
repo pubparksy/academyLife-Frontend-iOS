@@ -10,7 +10,7 @@ import Alamofire
 import AVFoundation
 import SVProgressHUD
 
-class ChatbotViewModel:NSObject, ObservableObject {
+class ChatbotViewModel: NSObject, ObservableObject {
     @Published var messages: [Message] = []
     @Published var isProcessing = false
     @Published var isRecording = false
@@ -26,7 +26,8 @@ class ChatbotViewModel:NSObject, ObservableObject {
     let azureSpeechKey = AppConfig.apiKeyAzureSpeechService
     
     private let audioFileName = "recording.wav"
-  
+    
+    // 질문: STT 녹음하기
     func toggleRecording() {
         if isRecording {
             stopRecording()
@@ -76,6 +77,7 @@ class ChatbotViewModel:NSObject, ObservableObject {
         transcribeAudio()
     }
     
+    // 음성파일을 업로드해 분석 및 텍스트로 변환
     func transcribeAudio() {
         SVProgressHUD.show()
         
@@ -92,21 +94,18 @@ class ChatbotViewModel:NSObject, ObservableObject {
                 SVProgressHUD.dismiss()
                 
                 switch response.result {
-                    case .success(let sttResponse):
-                        if let text = sttResponse.DisplayText {
-                            self.sendMessage(content: text)
-                        }
-                    case .failure(let error):
-                        print("STT Error: \(error.localizedDescription)")
+                case .success(let sttResponse):
+                    if let text = sttResponse.DisplayText {
+                        self.sendMessage(content: text)
+                    }
+                case .failure(let error):
+                    print("STT Error: \(error.localizedDescription)")
                 }
             }
     }
     
-    
-    
+    // 챗봇 응답: TTS 음성 재생하기
     func convertTextToSpeech(text: String) {
-            SVProgressHUD.show()
-        
         let url = "https://\(azureTTSEndpoint)"
         let headers: HTTPHeaders = [
             "Ocp-Apim-Subscription-Key": azureSpeechKey,
@@ -124,19 +123,17 @@ class ChatbotViewModel:NSObject, ObservableObject {
         
         AF.upload(ssml.data(using: .utf8)!, to: url, headers: headers)
             .responseData { response in
-                SVProgressHUD.dismiss()
-                
                 switch response.result {
-                    case .success(let data):
-                        do {
-                            try data.write(to: audioFilename)
-                            self.playAudio(from: audioFilename)
-                        } catch {
-                            print("TTS Audio Save Error: \(error.localizedDescription)")
-                        }
-                    case .failure(let error):
-                        print("TTS Error: \(error.localizedDescription)")
-                  
+                case .success(let data):
+                    do {
+                        try data.write(to: audioFilename)
+                        self.playAudio(from: audioFilename)
+                    } catch {
+                        print("TTS Audio Save Error: \(error.localizedDescription)")
+                    }
+                case .failure(let error):
+                    print("TTS Error: \(error.localizedDescription)")
+                    
                 }
             }
     }
@@ -154,22 +151,16 @@ class ChatbotViewModel:NSObject, ObservableObject {
             audioPlayer?.play()
             
             isPlaying = true
-            
-            SVProgressHUD.dismiss()
         } catch {
             print("Audio Playback Error: \(error.localizedDescription)")
         }
     }
     
     func stopAudio(){
-        SVProgressHUD.show()
-        
         if isPlaying {
             audioPlayer?.stop()
             isPlaying = false
             isProcessing = false
-            
-            SVProgressHUD.dismiss()
         }
     }
     
@@ -178,38 +169,38 @@ class ChatbotViewModel:NSObject, ObservableObject {
         
         let url = "https://\(azureOpenAIEndpoint)"
         let messages: [[String: String]] = [
-                   ["role": "user", "content": content]
-               ]
-               
+            ["role": "user", "content": content]
+        ]
+        
         let params: Parameters = [
-               "messages": messages,
-               "max_tokens": 100
-           ]
+            "messages": messages,
+            "max_tokens": 100
+        ]
         let headers: HTTPHeaders = [
             "api-key": "\(azureOpenAIKey)",
             "Content-Type": "application/json"
         ]
-       
+        
         AF.request(url, method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers)
-                    .responseDecodable(of: ChatbotRoot.self) { response in
-                        SVProgressHUD.dismiss()
-                        
-                        switch response.result {
-                        case .success(let root):
-                            if let assistantMessage = root.choices.first?.message.content {
-                                DispatchQueue.main.async {
-                                    self.messages.append(Message(role: "user", content: content))
-                                    self.messages.append(Message(role: "assistant", content: assistantMessage))
-//                                    self.convertTextToSpeech(text: assistantMessage)
-                                }
-                            }
-                        case .failure(let error):
-                            print("Error: \(error.localizedDescription)")
+            .responseDecodable(of: ChatbotRoot.self) { response in
+                SVProgressHUD.dismiss()
+                
+                switch response.result {
+                case .success(let root):
+                    if let assistantMessage = root.choices.first?.message.content {
+                        DispatchQueue.main.async {
+                            self.messages.append(Message(role: "user", content: content))
+                            self.messages.append(Message(role: "assistant", content: assistantMessage))
+                            //                                    self.convertTextToSpeech(text: assistantMessage)
                         }
                     }
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                }
             }
-
     }
+    
+}
 
 
 

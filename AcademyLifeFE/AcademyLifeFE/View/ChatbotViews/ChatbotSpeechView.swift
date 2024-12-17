@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChatbotSpeechView: View {
     @EnvironmentObject var chatbotVM: ChatbotViewModel
+        @State var isSheetPresented = false
     
     var text = ""
     var role: ChatbotRole = .user
@@ -34,32 +35,30 @@ struct ChatbotSpeechView: View {
                 }
             }
             
+            // 챗봇 응답일 경우 TTS 재생
             if role == .agent {
-                if chatbotVM.isPlaying {
-                    Button {
-                        chatbotVM.stopAudio()
-                    } label: {
-                        Image(systemName: "stop.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 20, height: 20)
-                            .foregroundColor(.accent)
+                Button {
+                    chatbotVM.convertTextToSpeech(text: text)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        isSheetPresented = true
                     }
-                } else {
-                    Button {
-                        chatbotVM.convertTextToSpeech(text: text)
-                    } label: {
-                        Image(systemName: "speaker.wave.2.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 20, height: 20)
-                            .foregroundColor(.accent)
-                    }
-                    .onAppear {
-                        chatbotVM.isPlaying = false
-                        chatbotVM.isProcessing = false
-                    }
+                } label: {
+                    Image(systemName: "speaker.wave.2.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
+                        .foregroundColor(.accent)
                 }
+                .onAppear {
+                    chatbotVM.isPlaying = false
+                    chatbotVM.isProcessing = false
+                }
+                .sheet(isPresented: $isSheetPresented, onDismiss: {
+                    chatbotVM.stopAudio()
+                }, content: {
+                    ChatbotTTSPlayerView()
+                        .presentationDetents([.fraction(0.3)])
+                })
             }
             
         }

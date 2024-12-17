@@ -16,19 +16,24 @@ struct MyPageCourseView: View {
             HStack {
                 Image(systemName: "graduationcap.fill")
                     .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: 30, height: 30)
                 Spacer()
                 Image(systemName: "arrow.up.right")
             }
-            .padding(.bottom, 50)
+            .padding(.bottom, 20)
             .foregroundStyle(.accent)
             
             VStack(alignment: .leading, spacing: 6) {
                 Text(courseName)
-                    .lineLimit(2)
-                    .font(.system(size: 16))
+                    .font(.system(size: 15))
                     .bold()
                     .foregroundStyle(.timiBlack)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+                    .truncationMode(.tail)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                
                 VStack(alignment: .leading) {
                     Text("\(startDate)")
                         .font(.system(size: 13))
@@ -46,5 +51,5 @@ struct MyPageCourseView: View {
 }
 
 #Preview {
-    MyPageCourseView(courseName: "courseName", startDate: "2024-12-32", endDate: "2024-12-30")
+    MyPageCourseView(courseName: "courseName courseName courseName", startDate: "2024-12-32", endDate: "2024-12-30")
 }

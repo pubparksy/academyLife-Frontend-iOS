@@ -30,7 +30,6 @@ struct MyPageView: View {
                     PageHeading(title: "마이페이지", bottomPaddng: 16)
                     DateDisplay()
                 }
-                .padding(.bottom)
                 
                 ScrollView {
                     HStack {

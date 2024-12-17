@@ -27,11 +27,11 @@ struct WideButton: View {
             Text(title)
                 .font(.system(size: 16))
                 .bold()
+                .foregroundStyle(textColor)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(bgColor)
         }
-        .foregroundStyle(textColor)
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(bgColor)
         .clipShape(RoundedRectangle(cornerRadius: 15))
         .overlay(
             RoundedRectangle(cornerRadius: 15)
