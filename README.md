@@ -1,5 +1,5 @@
-# Academy-Life-FE
+# academyLife-Frontend-iOS
 
-Frontend - Swift
+슬기로운 학원 생활 Frontend - Swift
 
 the time of division : 2024/12/05
